@@ -37,15 +37,17 @@ def bullets():
 def move_left():
     global ship_x
     global x_bullet
-    ship_x -= 10          
-    x_bullet -= 10
+    if ship_x - 10 > 0:
+        ship_x -= 10          
+        x_bullet -= 10
 
 #Move spaceship right
 def move_right():
     global ship_x
     global x_bullet
-    ship_x += 10
-    x_bullet += 10
+    if ship_x + 10 < width - box_width:
+        ship_x += 10
+        x_bullet += 10
 
 #Main function
 def main():
