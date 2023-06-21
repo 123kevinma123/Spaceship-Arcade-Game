@@ -1,4 +1,5 @@
 import pygame
+import random
 
 #Intialization
 pygame.init()
@@ -26,12 +27,6 @@ info_obj = pygame.display.Info()
 def update():
     pygame.draw.rect(WIN, red, pygame.Rect(ship_x, ship_y, box_width, box_height))
 
-#Move to new class
-def bullets():
-    global y_bullet
-    y_bullet -= 3
-    pygame.draw.rect(WIN, white, pygame.Rect(x_bullet, 
-                                             y_bullet, bullet_width, bullet_height))
 
 #Move spaceship left
 def move_left():
@@ -54,6 +49,8 @@ def main():
     run = True
     hold_keyR = False
     hold_keyL = False
+    bullets = []
+    global y_bullet
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -79,7 +76,11 @@ def main():
 
         WIN.fill(black)
         update()
-        bullets()
+        y_bullet -= 3
+        if random.random() < 0.1:
+            bullets.append(Bullet())
+    pygame.draw.rect(WIN, white, pygame.Rect(x_bullet, 
+                                             y_bullet, bullet_width, bullet_height))
         pygame.display.flip()
         clock.tick(60)
     pygame.quit()
