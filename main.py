@@ -93,6 +93,9 @@ def main():
         for shot in bullets_arr:
             shot.update()
             shot.draw()
+
+            if shot.y < 0:
+                bullets_arr.remove(shot)
         
         ship_sprites()
         pygame.display.flip()
