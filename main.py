@@ -2,6 +2,7 @@ import pygame
 import random
 
 from create_bullet import create_bullet
+from power_up import power_up
 
 #Intialization
 pygame.init()
@@ -56,6 +57,7 @@ def main():
     bullet_spawn_timer = pygame.time.get_ticks()
     bullet_spawn_interval = 70
     bullets_arr = []
+    powerup_arr = []
 
     #main game loop
     while run:
@@ -97,6 +99,19 @@ def main():
             if shot.y < 0:
                 bullets_arr.remove(shot)
         
+        #powerup spawning
+        #if current_time - bullet_spawn_timer >= bullet_spawn_interval:
+        upgrade = power_up(100, bullet_speed)
+        powerup_arr.append(upgrade)
+        #bullet_spawn_timer = current_time
+
+        for upgrade in powerup_arr:
+            upgrade.update()
+            upgrade.draw()
+
+            #if upgrade.y > 600:
+                #powerup_arr.remove(upgrade)
+
         ship_sprites()
         pygame.display.flip()
         clock.tick(60)
