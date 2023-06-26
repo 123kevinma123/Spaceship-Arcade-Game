@@ -19,6 +19,8 @@ bullet_height, bullet_width = 5, 5
 ship_x, ship_y = (width - sprite_height) / 2, height - sprite_height
 x_bullet, y_bullet = (width - bullet_height) / 2, height
 bullet_speed, ship_speed = 7, 8
+bullets_arr = []
+powerup_arr = []
 
 #Set display surface perimeters 
 WIN = pygame.display.set_mode((width, height))
@@ -49,15 +51,46 @@ def move_right():
         ship_x += ship_speed
         x_bullet += ship_speed
 
+#bullet spawning
+def bullet_spawn(bullet_spawn_timer, current_time_bullet):
+    global x_bullet
+    global bullets_arr
+    bullet_spawn_interval = 70
+    if current_time_bullet - bullet_spawn_timer >= bullet_spawn_interval:
+        shot = create_bullet(x_bullet, bullet_speed)
+        bullets_arr.append(shot)
+        bullet_spawn_timer = current_time_bullet
+
+    for shot in bullets_arr:
+        shot.update()
+        shot.draw()
+        if shot.y < 0:
+            bullets_arr.remove(shot)
+    return bullet_spawn_timer
+
+#powerup spawning
+def powerup_spawn(powerup_spawn_timer, current_time_powerup):
+    global powerup_arr
+    powerup_spawn_interval = 1500
+    if current_time_powerup - powerup_spawn_timer >= powerup_spawn_interval:
+        upgrade = power_up(bullet_speed)
+        powerup_arr.append(upgrade)
+        powerup_spawn_timer = current_time_powerup
+
+    for upgrade in powerup_arr:
+        upgrade.update()
+        upgrade.draw()
+        if upgrade.y > 600:
+            powerup_arr.remove(upgrade)
+    return powerup_spawn_timer
+
 #Main function
 def main():
     global x_bullet
     run = True
-    hold_keyR, hold_keyL, hold_keyU, hold_keyD = False, False, False, False
+    hold_keyR, hold_keyL = False, False
     bullet_spawn_timer = pygame.time.get_ticks()
-    bullet_spawn_interval = 70
-    bullets_arr = []
-    powerup_arr = []
+    powerup_spawn_timer = pygame.time.get_ticks()
 
     #main game loop
     while run:
@@ -86,31 +119,12 @@ def main():
         WIN.fill(black)
 
         #bullet spawning
-        current_time = pygame.time.get_ticks()
-        if current_time - bullet_spawn_timer >= bullet_spawn_interval:
-            shot = create_bullet(x_bullet, bullet_speed)
-            bullets_arr.append(shot)
-            bullet_spawn_timer = current_time
-
-        for shot in bullets_arr:
-            shot.update()
-            shot.draw()
-
-            if shot.y < 0:
-                bullets_arr.remove(shot)
+        current_time_bullet = pygame.time.get_ticks()
+        bullet_spawn_timer = bullet_spawn(bullet_spawn_timer, current_time_bullet)
         
         #powerup spawning
-        #if current_time - bullet_spawn_timer >= bullet_spawn_interval:
-        upgrade = power_up(100, bullet_speed)
-        powerup_arr.append(upgrade)
-        #bullet_spawn_timer = current_time
-
-        for upgrade in powerup_arr:
-            upgrade.update()
-            upgrade.draw()
-
-            #if upgrade.y > 600:
-                #powerup_arr.remove(upgrade)
+        current_time_powerup = pygame.time.get_ticks()
+        powerup_spawn_timer = powerup_spawn(powerup_spawn_timer, current_time_powerup)
 
         ship_sprites()
         pygame.display.flip()
