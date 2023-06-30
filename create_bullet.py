@@ -5,10 +5,10 @@ white = (255, 255, 255)
 orange = (255,140,0)
 
 class create_bullet:
-    def __init__(self, x_bullet, speed):
+    def __init__(self, x_bullet, y_bullet, speed):
         self.x = x_bullet
-        self.y = 550
-        self.trail = 550
+        self.y = y_bullet
+        self.trail = y_bullet
         self.speed = speed
 
     def update(self):

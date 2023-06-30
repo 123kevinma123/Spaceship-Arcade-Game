@@ -17,8 +17,9 @@ red = (255, 0, 0)
 sprite_width, sprite_height = 40, 50
 bullet_height, bullet_width = 5, 5
 ship_x, ship_y = (width - sprite_height) / 2, height - sprite_height
-x_bullet, y_bullet = (width - bullet_height) / 2, height
-bullet_speed, ship_speed = 7, 8
+x_bullet, y_bullet = (width - bullet_height) / 2, height - sprite_height
+bullet_speed, ship_speed = 8, 8
+vertical_max = 400
 bullets_arr = []
 powerup_arr = []
 
@@ -42,14 +43,28 @@ def move_left():
     global ship_x, x_bullet
     if ship_x - ship_speed > 0:
         ship_x -= ship_speed          
-        x_bullet -= ship_speed
+        x_bullet -= bullet_speed
 
 #Move spaceship right
 def move_right():
     global ship_x, x_bullet
-    if ship_x + ship_speed < width - sprite_height:
+    if ship_x + ship_speed < width - sprite_width:
         ship_x += ship_speed
-        x_bullet += ship_speed
+        x_bullet += bullet_speed
+
+#Move spaceship up
+def move_up():
+    global ship_y, y_bullet
+    if ship_y - ship_speed > vertical_max:
+        ship_y -= ship_speed
+        y_bullet -= bullet_speed
+
+#Move spaceship down
+def move_down():
+    global ship_y, y_bullet
+    if ship_y + ship_speed < height - sprite_height:
+        ship_y += ship_speed
+        y_bullet += bullet_speed
 
 #bullet spawning
 def bullet_spawn(bullet_spawn_timer, current_time_bullet):
@@ -57,7 +72,7 @@ def bullet_spawn(bullet_spawn_timer, current_time_bullet):
     global bullets_arr
     bullet_spawn_interval = 70
     if current_time_bullet - bullet_spawn_timer >= bullet_spawn_interval:
-        shot = create_bullet(x_bullet, bullet_speed)
+        shot = create_bullet(x_bullet, y_bullet, bullet_speed)
         bullets_arr.append(shot)
         bullet_spawn_timer = current_time_bullet
 
@@ -88,7 +103,7 @@ def powerup_spawn(powerup_spawn_timer, current_time_powerup):
 def main():
     global x_bullet
     run = True
-    hold_keyR, hold_keyL = False, False
+    hold_keyR, hold_keyL, hold_keyU, hold_keyD = False, False, False, False
     bullet_spawn_timer = pygame.time.get_ticks()
     powerup_spawn_timer = pygame.time.get_ticks()
 
@@ -103,18 +118,30 @@ def main():
                     hold_keyR = True
                 if event.key == pygame.K_LEFT:
                     hold_keyL = True
+                if event.key == pygame.K_UP:
+                    hold_keyU = True
+                if event.key == pygame.K_DOWN:
+                    hold_keyD = True
                     
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT:
                     hold_keyR = False
                 if event.key == pygame.K_LEFT:
                     hold_keyL = False
+                if event.key == pygame.K_UP:
+                    hold_keyU = False
+                if event.key == pygame.K_DOWN:
+                    hold_keyD = False
     
         #Left, Right, Up, Down, hold
         if hold_keyL:
             move_left()
         if hold_keyR:
             move_right()
+        if hold_keyU:
+            move_up()
+        if hold_keyD:
+            move_down()
 
         WIN.fill(black)
 
