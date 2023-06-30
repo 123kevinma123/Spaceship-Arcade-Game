@@ -3,6 +3,8 @@ import random
 
 from create_bullet import create_bullet
 from power_up import power_up
+from enemy import enemy
+
 
 #Intialization
 pygame.init()
@@ -22,6 +24,7 @@ bullet_speed, ship_speed = 8, 8
 vertical_max = 400
 bullets_arr = []
 powerup_arr = []
+enemy_arr = []
 
 #Set display surface perimeters 
 WIN = pygame.display.set_mode((width, height))
@@ -29,7 +32,6 @@ pygame.display.set_caption("Spaceship Game")
 WIN.fill(black)
 clock = pygame.time.Clock()
 info_obj = pygame.display.Info()
-
 
 #ship sprites
 def ship_sprites():
@@ -66,6 +68,16 @@ def move_down():
         ship_y += ship_speed
         y_bullet += bullet_speed
 
+def movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD):
+        if hold_keyL:
+            move_left()
+        if hold_keyR:
+            move_right()
+        if hold_keyU:
+            move_up()
+        if hold_keyD:
+            move_down()
+
 #bullet spawning
 def bullet_spawn(bullet_spawn_timer, current_time_bullet):
     global x_bullet
@@ -75,7 +87,6 @@ def bullet_spawn(bullet_spawn_timer, current_time_bullet):
         shot = create_bullet(x_bullet, y_bullet, bullet_speed)
         bullets_arr.append(shot)
         bullet_spawn_timer = current_time_bullet
-
     for shot in bullets_arr:
         shot.update()
         shot.draw()
@@ -91,13 +102,26 @@ def powerup_spawn(powerup_spawn_timer, current_time_powerup):
         upgrade = power_up(bullet_speed)
         powerup_arr.append(upgrade)
         powerup_spawn_timer = current_time_powerup
-
     for upgrade in powerup_arr:
         upgrade.update()
         upgrade.draw()
         if upgrade.y > 600:
             powerup_arr.remove(upgrade)
     return powerup_spawn_timer
+
+#enemy spawning
+def enemy_spawn(enemy_spawn_timer, current_time_enemy):
+    global enemy_spawn
+    enemy_spawn_interval = 2000
+    if current_time_enemy - enemy_spawn_timer >= enemy_spawn_interval:
+        enemy_bot = enemy()
+        enemy_arr.append(enemy_bot)
+        enemy_spawn_timer = current_time_enemy
+    for enemy_bot in enemy_arr:
+        enemy_bot.ship_sprites()
+        if (len(enemy_arr) == 5):
+            enemy_arr.remove(enemy_bot)
+    return enemy_spawn_timer
 
 #Main function
 def main():
@@ -106,6 +130,7 @@ def main():
     hold_keyR, hold_keyL, hold_keyU, hold_keyD = False, False, False, False
     bullet_spawn_timer = pygame.time.get_ticks()
     powerup_spawn_timer = pygame.time.get_ticks()
+    enemy_spawn_timer = pygame.time.get_ticks()
 
     #main game loop
     while run:
@@ -133,15 +158,7 @@ def main():
                 if event.key == pygame.K_DOWN:
                     hold_keyD = False
     
-        #Left, Right, Up, Down, hold
-        if hold_keyL:
-            move_left()
-        if hold_keyR:
-            move_right()
-        if hold_keyU:
-            move_up()
-        if hold_keyD:
-            move_down()
+        movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD)
 
         WIN.fill(black)
 
@@ -152,6 +169,10 @@ def main():
         #powerup spawning
         current_time_powerup = pygame.time.get_ticks()
         powerup_spawn_timer = powerup_spawn(powerup_spawn_timer, current_time_powerup)
+
+        #enemy spawning
+        current_time_enemy = pygame.time.get_ticks()
+        enemy_spawn_timer = enemy_spawn(enemy_spawn_timer, current_time_enemy)
 
         ship_sprites()
         pygame.display.flip()
