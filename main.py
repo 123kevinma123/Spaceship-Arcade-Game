@@ -20,7 +20,7 @@ sprite_width, sprite_height = 40, 50
 bullet_height, bullet_width = 5, 5
 ship_x, ship_y = (width - sprite_height) / 2, height - sprite_height
 x_bullet, y_bullet = (width - bullet_height) / 2, height - sprite_height
-bullet_speed, ship_speed = 8, 8
+bullet_speed, ship_speed = -8, 8
 vertical_max = 300
 bullets_arr = []
 powerup_arr = []
@@ -45,28 +45,28 @@ def move_left():
     global ship_x, x_bullet
     if ship_x - ship_speed > 0:
         ship_x -= ship_speed          
-        x_bullet -= bullet_speed
+        x_bullet += bullet_speed
 
 #Move spaceship right
 def move_right():
     global ship_x, x_bullet
     if ship_x + ship_speed < width - sprite_width:
         ship_x += ship_speed
-        x_bullet += bullet_speed
+        x_bullet -= bullet_speed
 
 #Move spaceship up
 def move_up():
     global ship_y, y_bullet
     if ship_y - ship_speed > vertical_max:
         ship_y -= ship_speed
-        y_bullet -= bullet_speed
+        y_bullet += bullet_speed
 
 #Move spaceship down
 def move_down():
     global ship_y, y_bullet
     if ship_y + ship_speed < height - sprite_height:
         ship_y += ship_speed
-        y_bullet += bullet_speed
+        y_bullet -= bullet_speed
 
 def movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD):
         if hold_keyL:
@@ -93,6 +93,7 @@ def bullet_spawn(bullet_spawn_timer, current_time_bullet):
         if shot.y < 0:
             bullets_arr.remove(shot)
     return bullet_spawn_timer
+
 
 #powerup spawning
 def powerup_spawn(powerup_spawn_timer, current_time_powerup):

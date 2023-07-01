@@ -12,8 +12,8 @@ class create_bullet:
         self.speed = speed
 
     def update(self):
-        self.y += self.speed
-        self.trail += self.speed
+        self.y -= self.speed
+        self.trail -= self.speed
 
     def draw(self):
         pygame.draw.rect(WIN, white, (self.x, self.y, 2, 12))
