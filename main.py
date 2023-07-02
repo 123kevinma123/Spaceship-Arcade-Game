@@ -24,7 +24,7 @@ bullet_speed, ship_speed = -8, 8
 vertical_max = 300
 bullets_arr = []
 powerup_arr = []
-enemy_arr = []
+enemy_arr = pygame.sprite.Group()
 
 #Set display surface perimeters 
 WIN = pygame.display.set_mode((width, height))
@@ -87,11 +87,13 @@ def bullet_spawn(bullet_spawn_timer, current_time_bullet):
         shot = create_bullet(x_bullet, y_bullet, bullet_speed)
         bullets_arr.append(shot)
         bullet_spawn_timer = current_time_bullet
+
     for shot in bullets_arr:
         shot.update()
         shot.draw()
         if shot.y < 0:
             bullets_arr.remove(shot)
+
     return bullet_spawn_timer
 
 
@@ -103,28 +105,33 @@ def powerup_spawn(powerup_spawn_timer, current_time_powerup):
         upgrade = power_up(bullet_speed)
         powerup_arr.append(upgrade)
         powerup_spawn_timer = current_time_powerup
+
     for upgrade in powerup_arr:
         upgrade.update()
         upgrade.draw()
         if upgrade.y > 600:
             powerup_arr.remove(upgrade)
+
     return powerup_spawn_timer
 
 #enemy spawning
 def enemy_spawn(enemy_spawn_timer, current_time_enemy):
-    global enemy_spawn
-    counter = 0
     enemy_spawn_interval = 2000
     if current_time_enemy - enemy_spawn_timer >= enemy_spawn_interval:
         enemy_bot = enemy()
-        enemy_arr.append(enemy_bot)
+        enemy_arr.add(enemy_bot)
         enemy_spawn_timer = current_time_enemy
             
     for enemy_bot in enemy_arr:
-        if not pygame.sprite.spritecollide(enemy_bot.ship_sprites(), enemy_arr, False):
-            WIN.blit(enemy_bot.ship_sprites(), (enemy_bot.x, enemy_bot.y))
-        if (len(enemy_arr) == 5):
-            enemy_arr.remove(enemy_bot)
+        collision = False
+        for other_enemy in enemy_arr:
+            if enemy_bot != other_enemy and pygame.sprite.collide_rect(enemy_bot, other_enemy):
+                collision = True
+                break
+        
+        if not collision:
+            WIN.blit(enemy_bot.image, (enemy_bot.x, enemy_bot.y))
+
     return enemy_spawn_timer
 
 #Main function

@@ -7,18 +7,14 @@ orange = (255,140,0)
 sprite_width, sprite_height = 40, 50
 sprite_angle = 180
 
-class enemy:
+class enemy(pygame.sprite.Sprite):
     def __init__(self):
+        super().__init__()
         self.x = random.randint(50, 350)
         self.y = 0
-        self.rect = self.x, self.y, sprite_width, sprite_height
-
-    #def update(self):
-        #self.y += self.speed
-
-    #ship sprites
-    def ship_sprites(self):
-        #pygame.draw.rect(WIN, red, pygame.Rect(ship_x, ship_y, box_width, box_height))
-        sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/spaceship_sprite.png")
-        sprite_image = pygame.transform.scale(sprite_image, (sprite_width, sprite_height))
-        return pygame.transform.rotate(sprite_image, sprite_angle)
+        self.image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/spaceship_sprite.png")
+        self.image = pygame.transform.scale(self.image, (sprite_width, sprite_height))
+        self.image = pygame.transform.rotate(self.image, sprite_angle)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
