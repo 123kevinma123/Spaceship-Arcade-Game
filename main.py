@@ -113,13 +113,16 @@ def powerup_spawn(powerup_spawn_timer, current_time_powerup):
 #enemy spawning
 def enemy_spawn(enemy_spawn_timer, current_time_enemy):
     global enemy_spawn
+    counter = 0
     enemy_spawn_interval = 2000
     if current_time_enemy - enemy_spawn_timer >= enemy_spawn_interval:
         enemy_bot = enemy()
         enemy_arr.append(enemy_bot)
         enemy_spawn_timer = current_time_enemy
+            
     for enemy_bot in enemy_arr:
-        enemy_bot.ship_sprites()
+        if not pygame.sprite.spritecollide(enemy_bot.ship_sprites(), enemy_arr, False):
+            WIN.blit(enemy_bot.ship_sprites(), (enemy_bot.x, enemy_bot.y))
         if (len(enemy_arr) == 5):
             enemy_arr.remove(enemy_bot)
     return enemy_spawn_timer
@@ -168,8 +171,8 @@ def main():
         bullet_spawn_timer = bullet_spawn(bullet_spawn_timer, current_time_bullet)
         
         #powerup spawning
-        current_time_powerup = pygame.time.get_ticks()
-        powerup_spawn_timer = powerup_spawn(powerup_spawn_timer, current_time_powerup)
+        #current_time_powerup = pygame.time.get_ticks()
+        #powerup_spawn_timer = powerup_spawn(powerup_spawn_timer, current_time_powerup)
 
         #enemy spawning
         current_time_enemy = pygame.time.get_ticks()
