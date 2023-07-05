@@ -35,7 +35,6 @@ info_obj = pygame.display.Info()
 
 #ship sprites
 def ship_sprites():
-    #pygame.draw.rect(WIN, red, pygame.Rect(ship_x, ship_y, box_width, box_height))
     sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/spaceship_sprite.png")
     sprite_image = pygame.transform.scale(sprite_image, (sprite_width, sprite_height))
     WIN.blit(sprite_image, (ship_x + 2, ship_y))
@@ -80,8 +79,7 @@ def movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD):
 
 #bullet spawning
 def bullet_spawn(bullet_spawn_timer, current_time_bullet):
-    global x_bullet
-    global bullets_arr
+    global x_bullet, bullets_arr
     bullet_spawn_interval = 70
     if current_time_bullet - bullet_spawn_timer >= bullet_spawn_interval:
         shot = create_bullet(x_bullet, y_bullet, bullet_speed)
@@ -118,19 +116,19 @@ def powerup_spawn(powerup_spawn_timer, current_time_powerup):
 def enemy_spawn(enemy_spawn_timer, current_time_enemy):
     enemy_spawn_interval = 2000
     if current_time_enemy - enemy_spawn_timer >= enemy_spawn_interval:
-        enemy_bot = enemy()
-        enemy_arr.add(enemy_bot)
-        enemy_spawn_timer = current_time_enemy
-            
-    for enemy_bot in enemy_arr:
+        new_enemy = enemy()
         collision = False
-        for other_enemy in enemy_arr:
-            if enemy_bot != other_enemy and pygame.sprite.collide_rect(enemy_bot, other_enemy):
+        for enemy_bot in enemy_arr: #checks if sprite will collide with anything in the group
+            if pygame.sprite.collide_rect(enemy_bot, new_enemy):
                 collision = True
                 break
-        
-        if not collision:
-            WIN.blit(enemy_bot.image, (enemy_bot.x, enemy_bot.y))
+    
+        if not collision: #add sprite to group if not
+            enemy_arr.add(new_enemy)
+            enemy_spawn_timer = current_time_enemy
+
+    for enemy_bot in enemy_arr:
+        WIN.blit(enemy_bot.image, (enemy_bot.x, enemy_bot.y))
 
     return enemy_spawn_timer
 
