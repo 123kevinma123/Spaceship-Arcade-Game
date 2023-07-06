@@ -2,6 +2,7 @@ import pygame
 import random
 
 from create_bullet import create_bullet
+from create_enemy_bullet import create_enemy_bullet
 from power_up import power_up
 from enemy import enemy
 
@@ -20,10 +21,11 @@ sprite_width, sprite_height = 40, 50
 bullet_height, bullet_width = 5, 5
 ship_x, ship_y = (width - sprite_height) / 2, height - sprite_height
 x_bullet, y_bullet = (width - bullet_height) / 2, height - sprite_height
-bullet_speed, ship_speed = -8, 8
+bullet_speed, ship_speed, enemy_bullet_speed = -8, 8, 8
 vertical_max = 300
 bullets_arr = []
 powerup_arr = []
+enemy_bullets_arr = []
 enemy_arr = pygame.sprite.Group()
 
 #Set display surface perimeters 
@@ -94,6 +96,24 @@ def bullet_spawn(bullet_spawn_timer, current_time_bullet):
 
     return bullet_spawn_timer
 
+#enemy bullet spawning
+def enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet):
+    global x_bullet, enemy_bullets_arr
+    bullet_spawn_interval = 70
+    if current_time_enemy_bullet - enemy_bullet_spawn_timer >= bullet_spawn_interval:
+        for enemy_bot in enemy_arr:
+            shot = create_enemy_bullet(enemy_bot.x + 18, enemy_bullet_speed)
+            enemy_bullets_arr.append(shot)
+        enemy_bullet_spawn_timer = current_time_enemy_bullet
+
+    for shot in enemy_bullets_arr:
+        shot.update()
+        shot.draw()
+        if shot.y > 600:
+            enemy_bullets_arr.remove(shot)
+
+    return enemy_bullet_spawn_timer
+
 
 #powerup spawning
 def powerup_spawn(powerup_spawn_timer, current_time_powerup):
@@ -140,6 +160,7 @@ def main():
     bullet_spawn_timer = pygame.time.get_ticks()
     powerup_spawn_timer = pygame.time.get_ticks()
     enemy_spawn_timer = pygame.time.get_ticks()
+    enemy_bullet_spawn_timer = pygame.time.get_ticks()
 
     #main game loop
     while run:
@@ -182,6 +203,10 @@ def main():
         #enemy spawning
         current_time_enemy = pygame.time.get_ticks()
         enemy_spawn_timer = enemy_spawn(enemy_spawn_timer, current_time_enemy)
+
+        #enemy bullet spawning
+        current_time_enemy_bullet = pygame.time.get_ticks()
+        enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
 
         ship_sprites()
         pygame.display.flip()
