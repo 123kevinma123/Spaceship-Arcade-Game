@@ -14,15 +14,30 @@ pygame.init()
 width = 400
 height = 600
 
+#Set background
+background_image = pygame.image.load("background.png")
+background_image = pygame.transform.scale(background_image, (width, height))
+background_height = background_image.get_height()
+background_y1 = 0
+background_y2 = -background_height
+
 #Set RGB + other constants
+
 black = (0, 0, 0)
 red = (255, 0, 0)
+white = (255, 255, 255)
+blue = (0, 0, 255)
+orange = (255,140,0)
+grey =  (211, 211, 211)
+silver = (192, 192, 192)
+
 sprite_width, sprite_height = 40, 50
 bullet_height, bullet_width = 5, 5
 ship_x, ship_y = (width - sprite_height) / 2, height - sprite_height
 x_bullet, y_bullet = (width - bullet_height) / 2, height - sprite_height
 bullet_speed, ship_speed, enemy_bullet_speed = -8, 8, 8
-vertical_max = 300
+vertical_max = 0
+scroll_speed = 1
 bullets_arr = []
 powerup_arr = []
 enemy_bullets_arr = []
@@ -154,7 +169,7 @@ def enemy_spawn(enemy_spawn_timer, current_time_enemy):
 
 #Main function
 def main():
-    global x_bullet
+    global x_bullet, background_y1, background_y2
     run = True
     hold_keyR, hold_keyL, hold_keyU, hold_keyD = False, False, False, False
     bullet_spawn_timer = pygame.time.get_ticks()
@@ -190,7 +205,15 @@ def main():
     
         movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD)
 
-        WIN.fill(black)
+        background_y1 += scroll_speed
+        background_y2 += scroll_speed
+        if background_y1 >= background_height:
+            background_y1 = -background_height
+        if background_y2 >= background_height:
+            background_y2 = -background_height
+        WIN.blit(background_image, (0,background_y1))
+        WIN.blit(background_image, (0, background_y2))
+
 
         #bullet spawning
         current_time_bullet = pygame.time.get_ticks()
@@ -207,6 +230,14 @@ def main():
         #enemy bullet spawning
         current_time_enemy_bullet = pygame.time.get_ticks()
         enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
+        pygame.draw.polygon(WIN, white, [(20, 0), (25, 35), (15, 35)]) #body
+        pygame.draw.polygon(WIN, white, [(20, 10), (30,35), (10,35)]) #wings
+        pygame.draw.polygon(WIN, white, [(15, 35), (25, 35), (25, 37), (15,37)]) #engine
+        #pygame.draw.polygon(WIN, black, [(19.5, 20), (20.5, 20), (20.5, 27), (19.5,27)]) #cockpit
+        pygame.draw.polygon(WIN, orange, [(18, 37), (22, 37), (22, 43), (18,43)]) #exhaust
+
+
+    
 
         ship_sprites()
         pygame.display.flip()
