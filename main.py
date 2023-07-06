@@ -167,9 +167,21 @@ def enemy_spawn(enemy_spawn_timer, current_time_enemy):
 
     return enemy_spawn_timer
 
+#scrolling background
+def background():
+    global background_y1, background_y2
+    background_y1 += scroll_speed
+    background_y2 += scroll_speed
+    if background_y1 >= background_height:
+        background_y1 = -background_height
+    if background_y2 >= background_height:
+        background_y2 = -background_height
+    WIN.blit(background_image, (0,background_y1))
+    WIN.blit(background_image, (0, background_y2))
+
 #Main function
 def main():
-    global x_bullet, background_y1, background_y2
+    global x_bullet
     run = True
     hold_keyR, hold_keyL, hold_keyU, hold_keyD = False, False, False, False
     bullet_spawn_timer = pygame.time.get_ticks()
@@ -205,15 +217,7 @@ def main():
     
         movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD)
 
-        background_y1 += scroll_speed
-        background_y2 += scroll_speed
-        if background_y1 >= background_height:
-            background_y1 = -background_height
-        if background_y2 >= background_height:
-            background_y2 = -background_height
-        WIN.blit(background_image, (0,background_y1))
-        WIN.blit(background_image, (0, background_y2))
-
+        background()
 
         #bullet spawning
         current_time_bullet = pygame.time.get_ticks()
@@ -230,6 +234,7 @@ def main():
         #enemy bullet spawning
         current_time_enemy_bullet = pygame.time.get_ticks()
         enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
+        
         pygame.draw.polygon(WIN, white, [(20, 0), (25, 35), (15, 35)]) #body
         pygame.draw.polygon(WIN, white, [(20, 10), (30,35), (10,35)]) #wings
         pygame.draw.polygon(WIN, white, [(15, 35), (25, 35), (25, 37), (15,37)]) #engine
