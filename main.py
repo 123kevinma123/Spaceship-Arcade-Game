@@ -1,3 +1,4 @@
+import time
 import pygame
 import random
 
@@ -15,7 +16,7 @@ width = 400
 height = 600
 
 #Set background
-background_image = pygame.image.load("background.png")
+background_image = pygame.image.load("sparse_background.png")
 background_image = pygame.transform.scale(background_image, (width, height))
 background_height = background_image.get_height()
 background_y1 = 0
@@ -33,16 +34,18 @@ silver = (192, 192, 192)
 fire = (0, 42, 255)
 
 sprite_width, sprite_height = 50, 60
-bullet_height, bullet_width = 5, 5
-ship_x, ship_y = (width - sprite_height) / 2, height - sprite_height
-x_bullet, y_bullet = (width - bullet_height) / 2, height - sprite_height
-bullet_speed, ship_speed, enemy_bullet_speed = -8, 8, 8
+bullet_height, bullet_width = 2, 13
+ship_x, ship_y = (width - sprite_width) / 2, height - sprite_height
+x_bullet, y_bullet = (width - bullet_width) / 2, height - sprite_height
+bullet_speed, enemy_bullet_speed = -5, 8
+speed_down, speed_up, speed_LR = 3.5, 4, 6
 vertical_max = 0
-scroll_speed = 1
+scroll_speed = 2
 bullets_arr = []
 powerup_arr = []
 enemy_bullets_arr = []
 enemy_arr = pygame.sprite.Group()
+bullet_spawn_interval, enemy_bullet_spawn_interval = 300, 100
 
 #Set display surface perimeters 
 WIN = pygame.display.set_mode((width, height))
@@ -52,41 +55,52 @@ clock = pygame.time.Clock()
 info_obj = pygame.display.Info()
 
 #ship sprites
-def ship_sprites():
-    #sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/spaceship_sprite.png")
-    sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c13.png")
+def ship_sprites(hold_keyR, hold_keyL, hold_keyU, hold_keyD):
+    sprite_delay = 0.2
+    if hold_keyR:
+        sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c1.png")
+        #time.sleep(sprite_delay)
+    elif hold_keyL:
+        sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c2.png")
+    elif hold_keyU:
+        sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c3.png")
+    elif hold_keyD:
+        sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c4.png")
+    else:
+        sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c0.png")
     sprite_image = pygame.transform.scale(sprite_image, (sprite_width, sprite_height))
-    WIN.blit(sprite_image, (ship_x + 3, ship_y))
+    WIN.blit(sprite_image, (ship_x - 6, ship_y))
 
 #Move spaceship left
 def move_left():
     global ship_x, x_bullet
-    if ship_x - ship_speed > 0:
-        ship_x -= ship_speed          
-        x_bullet += bullet_speed
+    if ship_x - speed_LR > 0:
+        ship_x -= speed_LR          
+        x_bullet -= speed_LR
 
 #Move spaceship right
 def move_right():
     global ship_x, x_bullet
-    if ship_x + ship_speed < width - sprite_width:
-        ship_x += ship_speed
-        x_bullet -= bullet_speed
+    if ship_x + speed_LR < width - sprite_width:
+        ship_x += speed_LR
+        x_bullet += speed_LR
 
 #Move spaceship up
 def move_up():
     global ship_y, y_bullet
-    if ship_y - ship_speed > vertical_max:
-        ship_y -= ship_speed
-        y_bullet += bullet_speed
+    if ship_y - speed_up > vertical_max:
+        ship_y -= speed_up
+        y_bullet -= speed_up
 
 #Move spaceship down
 def move_down():
     global ship_y, y_bullet
-    if ship_y + ship_speed < height - sprite_height:
-        ship_y += ship_speed
-        y_bullet -= bullet_speed
+    if ship_y + speed_down < height - sprite_height:
+        ship_y += speed_down
+        y_bullet += speed_down
 
 def movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD):
+        global scroll_speed
         if hold_keyL:
             move_left()
         if hold_keyR:
@@ -99,7 +113,6 @@ def movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD):
 #bullet spawning
 def bullet_spawn(bullet_spawn_timer, current_time_bullet):
     global x_bullet, bullets_arr
-    bullet_spawn_interval = 70
     if current_time_bullet - bullet_spawn_timer >= bullet_spawn_interval:
         shot = create_bullet(x_bullet, y_bullet, bullet_speed)
         bullets_arr.append(shot)
@@ -115,9 +128,8 @@ def bullet_spawn(bullet_spawn_timer, current_time_bullet):
 
 #enemy bullet spawning
 def enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet):
-    global x_bullet, enemy_bullets_arr
-    bullet_spawn_interval = 70
-    if current_time_enemy_bullet - enemy_bullet_spawn_timer >= bullet_spawn_interval:
+    global x_bullet, enemy_bullets_arr, enemy_bullet_spawn_interval
+    if current_time_enemy_bullet - enemy_bullet_spawn_timer >= enemy_bullet_spawn_interval:
         for enemy_bot in enemy_arr:
             shot = create_enemy_bullet(enemy_bot.x + 18, enemy_bullet_speed)
             enemy_bullets_arr.append(shot)
@@ -183,7 +195,7 @@ def background():
 
 #Main function
 def main():
-    global x_bullet
+    global x_bullet, scroll_speed
     run = True
     hold_keyR, hold_keyL, hold_keyU, hold_keyD = False, False, False, False
     bullet_spawn_timer = pygame.time.get_ticks()
@@ -203,8 +215,10 @@ def main():
                 if event.key == pygame.K_LEFT:
                     hold_keyL = True
                 if event.key == pygame.K_UP:
+                    #scroll_speed = 4
                     hold_keyU = True
                 if event.key == pygame.K_DOWN:
+                    #scroll_speed = 1
                     hold_keyD = True
                     
             if event.type == pygame.KEYUP:
@@ -213,13 +227,17 @@ def main():
                 if event.key == pygame.K_LEFT:
                     hold_keyL = False
                 if event.key == pygame.K_UP:
+                    #scroll_speed = 2
                     hold_keyU = False
                 if event.key == pygame.K_DOWN:
+                    #scroll_speed = 2
                     hold_keyD = False
     
         movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD)
 
         background()
+
+        ship_sprites(hold_keyR, hold_keyL, hold_keyU, hold_keyD)
 
         #bullet spawning
         current_time_bullet = pygame.time.get_ticks()
@@ -237,7 +255,6 @@ def main():
         current_time_enemy_bullet = pygame.time.get_ticks()
         enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
         
-        ship_sprites()
         pygame.display.flip()
         clock.tick(60)
     pygame.quit()
