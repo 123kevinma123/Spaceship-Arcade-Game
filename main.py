@@ -28,10 +28,11 @@ red = (255, 0, 0)
 white = (255, 255, 255)
 blue = (0, 0, 255)
 orange = (255,140,0)
-grey =  (211, 211, 211)
+grey = (128, 128, 128)
 silver = (192, 192, 192)
+fire = (0, 42, 255)
 
-sprite_width, sprite_height = 40, 50
+sprite_width, sprite_height = 50, 60
 bullet_height, bullet_width = 5, 5
 ship_x, ship_y = (width - sprite_height) / 2, height - sprite_height
 x_bullet, y_bullet = (width - bullet_height) / 2, height - sprite_height
@@ -52,9 +53,10 @@ info_obj = pygame.display.Info()
 
 #ship sprites
 def ship_sprites():
-    sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/spaceship_sprite.png")
+    #sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/spaceship_sprite.png")
+    sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c13.png")
     sprite_image = pygame.transform.scale(sprite_image, (sprite_width, sprite_height))
-    WIN.blit(sprite_image, (ship_x + 2, ship_y))
+    WIN.blit(sprite_image, (ship_x + 3, ship_y))
 
 #Move spaceship left
 def move_left():
@@ -235,15 +237,6 @@ def main():
         current_time_enemy_bullet = pygame.time.get_ticks()
         enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
         
-        pygame.draw.polygon(WIN, white, [(20, 0), (25, 35), (15, 35)]) #body
-        pygame.draw.polygon(WIN, white, [(20, 10), (30,35), (10,35)]) #wings
-        pygame.draw.polygon(WIN, white, [(15, 35), (25, 35), (25, 37), (15,37)]) #engine
-        #pygame.draw.polygon(WIN, black, [(19.5, 20), (20.5, 20), (20.5, 27), (19.5,27)]) #cockpit
-        pygame.draw.polygon(WIN, orange, [(18, 37), (22, 37), (22, 43), (18,43)]) #exhaust
-
-
-    
-
         ship_sprites()
         pygame.display.flip()
         clock.tick(60)
