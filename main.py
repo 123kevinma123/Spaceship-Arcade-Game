@@ -16,7 +16,7 @@ width = 400
 height = 600
 
 #Set background
-background_image = pygame.image.load("sparse_background.png")
+background_image = pygame.image.load("background2.png")
 background_image = pygame.transform.scale(background_image, (width, height))
 background_height = background_image.get_height()
 background_y1 = 0
@@ -33,12 +33,12 @@ grey = (128, 128, 128)
 silver = (192, 192, 192)
 fire = (0, 42, 255)
 
-sprite_width, sprite_height = 50, 60
+sprite_width, sprite_height = 60, 60
 bullet_height, bullet_width = 2, 13
 ship_x, ship_y = (width - sprite_width) / 2, height - sprite_height
 x_bullet, y_bullet = (width - bullet_width) / 2, height - sprite_height
 bullet_speed, enemy_bullet_speed = -5, 8
-speed_down, speed_up, speed_LR = 3.5, 4, 6
+speed_down, speed_up, speed_LR = 3.5, 4, 4
 vertical_max = 0
 scroll_speed = 2
 bullets_arr = []
@@ -56,10 +56,10 @@ info_obj = pygame.display.Info()
 
 #ship sprites
 def ship_sprites(hold_keyR, hold_keyL, hold_keyU, hold_keyD):
-    sprite_delay = 0.2
+    cross_delay = 0.15
+    flame_delay = 0.001
     if hold_keyR:
         sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c1.png")
-        #time.sleep(sprite_delay)
     elif hold_keyL:
         sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c2.png")
     elif hold_keyU:
@@ -67,7 +67,13 @@ def ship_sprites(hold_keyR, hold_keyL, hold_keyU, hold_keyD):
     elif hold_keyD:
         sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c4.png")
     else:
-        sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c0.png")
+        #cross_index = (pygame.time.get_ticks() // int(cross_delay * 1000)) % 10  # glowing cross animation
+        #flame_index = (pygame.time.get_ticks() // int(flame_delay * 1000)) % 3  # flame animation
+        cross_index = -1
+        sprite_image = pygame.image.load(f"/Users/123ke/Documents/GitHub/spaceship/c5_{cross_index + 1}.png")
+        #flame_image = pygame.image.load(f"/Users/123ke/Documents/GitHub/spaceship/c6_{flame_index + 1}.png")
+        #sprite_image.blit(flame_image, (0, 0))
+        
     sprite_image = pygame.transform.scale(sprite_image, (sprite_width, sprite_height))
     WIN.blit(sprite_image, (ship_x - 6, ship_y))
 
@@ -253,7 +259,7 @@ def main():
 
         #enemy bullet spawning
         current_time_enemy_bullet = pygame.time.get_ticks()
-        enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
+        #enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
         
         pygame.display.flip()
         clock.tick(60)
