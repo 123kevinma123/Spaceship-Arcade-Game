@@ -12,9 +12,11 @@ class create_bullet:
         self.x = x_bullet
         self.y = y_bullet
         self.speed = speed
+        #print(self.y)
 
     def update(self):
-        self.y += self.speed
+        self.y -= self.speed
+        #print(self.y)
 
     def draw(self):
-        pygame.draw.rect(WIN, red, (self.x, self.y, 2, 13))
+        pygame.draw.rect(WIN, red, (self.x, self.y, 3, 13))
