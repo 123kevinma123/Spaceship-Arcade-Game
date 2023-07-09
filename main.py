@@ -37,11 +37,11 @@ silver = (192, 192, 192)
 fire = (0, 42, 255)
 
 sprite_width, sprite_height = 60, 60
-bullet_height, bullet_width = 2, 13
+bullet_width, bullet_height = 2, 10
 ship_x, ship_y = (width - sprite_width) / 2, height - sprite_height
-x_bullet, y_bullet = (width - bullet_width) / 2, 540
-bullet_speed, enemy_bullet_speed = 7, 8
-speed_down, speed_up, speed_LR = 3.5, 4, 4
+x_bullet, y_bullet = (width - bullet_width) / 2, 530
+bullet_speed, enemy_bullet_speed = 4, 8
+speed_down, speed_up, speed_LR = 3, 3, 4
 vertical_max = 0
 scroll_speed = 2
 bullets_arr = []
@@ -78,7 +78,7 @@ def ship_sprites(hold_keyR, hold_keyL, hold_keyU, hold_keyD):
         #sprite_image.blit(flame_image, (0, 0))
         
     sprite_image = pygame.transform.scale(sprite_image, (sprite_width, sprite_height))
-    WIN.blit(sprite_image, (ship_x - 5, ship_y))
+    WIN.blit(sprite_image, (ship_x, ship_y))
 
 #Move spaceship left
 def move_left():
@@ -109,7 +109,6 @@ def move_down():
         y_bullet += speed_down
 
 def movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD):
-        global scroll_speed
         if hold_keyL:
             move_left()
         if hold_keyR:
@@ -119,20 +118,47 @@ def movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD):
         if hold_keyD:
             move_down()
 
-#bullet spawning
-def bullet_spawn(bullet_spawn_timer, current_time_bullet, x_bullet, y_bullet):
-    global bullets_arr
+def bullet_spawn(bullet_spawn_timer, current_time_bullet, x_bullet, score):
+    bullet_count = 1
+    bullet_spawn_distance = 8
+    bullets_to_remove = []  # Store bullets to be removed
+    y_coord = [[y_bullet],
+               [y_bullet, y_bullet],
+               [y_bullet + 10, y_bullet, y_bullet + 10],
+               [y_bullet + 15, y_bullet, y_bullet, y_bullet + 15],
+               [y_bullet + 20, y_bullet + 10, y_bullet, y_bullet + 10, y_bullet + 20]] #stores y coordinate variations
+    count = 0
     if current_time_bullet - bullet_spawn_timer >= bullet_spawn_interval:
-        shot = create_bullet(x_bullet, y_bullet, bullet_speed)
-        bullets_arr.append(shot)
-        bullet_spawn_timer = current_time_bullet 
+        if score >= 200 and score < 300:
+            bullet_count = 2
+            x_bullet += bullet_spawn_distance // 2
+        elif score >= 300 and score < 400:
+            bullet_count = 3
+            x_bullet += bullet_spawn_distance
+        elif score >= 400 and score < 500:
+            bullet_count = 4
+            x_bullet += bullet_spawn_distance * 3 // 2
+        elif score >= 500:
+            bullet_count = 5
+            x_bullet += bullet_spawn_distance * 2
+        
+        for _ in range(bullet_count):  # Spawn bullets based on score
+            shot = create_bullet(x_bullet, y_coord[bullet_count- 1][count], bullet_speed)
+            bullets_arr.append(shot)
+            x_bullet -= bullet_spawn_distance
+            count += 1                
+
+        bullet_spawn_timer = current_time_bullet
 
     for shot in bullets_arr:
-        #print(str(shot.y))
-        shot.update() #modifying the global value so it gets lowered each time
+        shot.update()
         shot.draw()
         if shot.y < 0:
-            bullets_arr.remove(shot)
+            bullets_to_remove.append(shot)  # Add bullets to be removed to the separate list
+
+    # Remove bullets that need to be removed
+    for shot in bullets_to_remove:
+        bullets_arr.remove(shot)
 
     return bullet_spawn_timer
 
@@ -203,33 +229,13 @@ def background():
     WIN.blit(background_image, (0,background_y1))
     WIN.blit(background_image, (0, background_y2))
 
-#
-def upgrades():
-    current_time_bullet1 = pygame.time.get_ticks()
-    bullet_spawn_timer1 = bullet_spawn(bullet_spawn_timer1, current_time_bullet1, x_bullet, y_bullet)
-
-    current_time_bullet2 = pygame.time.get_ticks()
-    #bullet_spawn_timer2 = bullet_spawn(bullet_spawn_timer2, current_time_bullet2, x_bullet + 10, y_bullet)
-
-    current_time_bullet3 = pygame.time.get_ticks()
-    #bullet_spawn_timer3 = bullet_spawn(bullet_spawn_timer3, current_time_bullet3, x_bullet - 10, y_bullet)
-
-    current_time_bullet4 = pygame.time.get_ticks()
-    #bullet_spawn_timer4 = bullet_spawn(bullet_spawn_timer4, current_time_bullet4, x_bullet + 20, y_bullet)
-
-    current_time_bullet5 = pygame.time.get_ticks()
-    #bullet_spawn_timer5 = bullet_spawn(bullet_spawn_timer5, current_time_bullet5, x_bullet - 20, y_bullet)
-
 #Main function
 def main():
     global x_bullet, y_bullet, scroll_speed
     run = True
+    score = 0
     hold_keyR, hold_keyL, hold_keyU, hold_keyD = False, False, False, False
-    bullet_spawn_timer1 = pygame.time.get_ticks()
-    bullet_spawn_timer2 = pygame.time.get_ticks()
-    bullet_spawn_timer3 = pygame.time.get_ticks()
-    bullet_spawn_timer4 = pygame.time.get_ticks()
-    bullet_spawn_timer5 = pygame.time.get_ticks()
+    bullet_spawn_timer = pygame.time.get_ticks()
     powerup_spawn_timer = pygame.time.get_ticks()
     enemy_spawn_timer = pygame.time.get_ticks()
     enemy_bullet_spawn_timer = pygame.time.get_ticks()
@@ -268,24 +274,12 @@ def main():
 
         background()
 
+        #bullet spawning
+        current_time_bullet = pygame.time.get_ticks()
+        bullet_spawn_timer = bullet_spawn(bullet_spawn_timer, current_time_bullet, x_bullet, 500)
+
         ship_sprites(hold_keyR, hold_keyL, hold_keyU, hold_keyD)
 
-        #bullet spawning
-        
-        current_time_bullet1 = pygame.time.get_ticks()
-        bullet_spawn_timer1 = bullet_spawn(bullet_spawn_timer1, current_time_bullet1, x_bullet, y_bullet)
-
-        current_time_bullet2 = pygame.time.get_ticks()
-        #bullet_spawn_timer2 = bullet_spawn(bullet_spawn_timer2, current_time_bullet2, x_bullet + 10, y_bullet)
-
-        current_time_bullet3 = pygame.time.get_ticks()
-        #bullet_spawn_timer3 = bullet_spawn(bullet_spawn_timer3, current_time_bullet3, x_bullet - 10, y_bullet)
-
-        current_time_bullet4 = pygame.time.get_ticks()
-        #bullet_spawn_timer4 = bullet_spawn(bullet_spawn_timer4, current_time_bullet4, x_bullet + 20, y_bullet)
-
-        current_time_bullet5 = pygame.time.get_ticks()
-        #bullet_spawn_timer5 = bullet_spawn(bullet_spawn_timer5, current_time_bullet5, x_bullet - 20, y_bullet)
 
         #powerup spawning
         #current_time_powerup = pygame.time.get_ticks()
@@ -300,7 +294,7 @@ def main():
         #enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
         
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(120)
     pygame.quit()
 
 main()

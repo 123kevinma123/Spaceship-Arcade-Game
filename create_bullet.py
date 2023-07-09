@@ -19,4 +19,4 @@ class create_bullet:
         #print(self.y)
 
     def draw(self):
-        pygame.draw.rect(WIN, red, (self.x, self.y, 3, 13))
+        pygame.draw.rect(WIN, red, (self.x, self.y, 2, 20))
