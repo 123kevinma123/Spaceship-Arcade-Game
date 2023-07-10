@@ -38,11 +38,11 @@ silver = (192, 192, 192)
 fire = (0, 42, 255)
 
 sprite_width, sprite_height = 60, 60
-bullet_width, bullet_height = 2, 10
+bullet_width, bullet_height = 4, 20
 start_var = 100
 ship_x, ship_y = (width - sprite_width) / 2, height + sprite_height
 x_bullet, y_bullet = (width - bullet_width) / 2, height - sprite_height - start_var - 10
-bullet_speed, enemy_bullet_speed = 4, 8
+bullet_speed, enemy_bullet_speed = 7, 8
 speed_down, speed_up, speed_LR = 3, 3, 4
 vertical_max = 0
 scroll_speed = 2
