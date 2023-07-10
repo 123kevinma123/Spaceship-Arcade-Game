@@ -7,6 +7,7 @@ from create_bullet import create_bullet
 from create_enemy_bullet import create_enemy_bullet
 from power_up import power_up
 from enemy import enemy
+from start_page import start_page
 
 # Redirect standard output to console
 sys.stdout = sys.__stdout__
@@ -38,8 +39,9 @@ fire = (0, 42, 255)
 
 sprite_width, sprite_height = 60, 60
 bullet_width, bullet_height = 2, 10
-ship_x, ship_y = (width - sprite_width) / 2, height - sprite_height
-x_bullet, y_bullet = (width - bullet_width) / 2, 530
+start_var = 100
+ship_x, ship_y = (width - sprite_width) / 2, height + sprite_height
+x_bullet, y_bullet = (width - bullet_width) / 2, height - sprite_height - start_var - 10
 bullet_speed, enemy_bullet_speed = 4, 8
 speed_down, speed_up, speed_LR = 3, 3, 4
 vertical_max = 0
@@ -231,14 +233,24 @@ def background():
 
 #Main function
 def main():
-    global x_bullet, y_bullet, scroll_speed
-    run = True
+    global x_bullet, y_bullet, scroll_speed, background_y1, background_y2, ship_y
+    run, shoot = True, False
     score = 0
+    transition_speed = 2.5
     hold_keyR, hold_keyL, hold_keyU, hold_keyD = False, False, False, False
     bullet_spawn_timer = pygame.time.get_ticks()
     powerup_spawn_timer = pygame.time.get_ticks()
     enemy_spawn_timer = pygame.time.get_ticks()
     enemy_bullet_spawn_timer = pygame.time.get_ticks()
+    shoot_timer = 0
+    shoot_delay = 400
+    count = 0
+
+    #start menu
+    start = start_page()
+    start.run()
+    background_y1 = start.background_y1
+    background_y2 = start.background_y2
 
     #main game loop
     while run:
@@ -269,16 +281,29 @@ def main():
                 if event.key == pygame.K_DOWN:
                     #scroll_speed = 2
                     hold_keyD = False
-    
-        movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD)
-
+        
         background()
+        
+        if ship_y > (height - sprite_height - start_var) and shoot == False:
+            ship_sprites(hold_keyR, hold_keyL, hold_keyU, hold_keyD)
+            ship_y -= transition_speed
+        else:
+            shoot = True
+            if count == 0:
+                shoot_timer = pygame.time.get_ticks()
+                count += 1
 
-        #bullet spawning
-        current_time_bullet = pygame.time.get_ticks()
-        bullet_spawn_timer = bullet_spawn(bullet_spawn_timer, current_time_bullet, x_bullet, 500)
+        current_shoot_timer = pygame.time.get_ticks()
+        
+        if shoot and current_shoot_timer - shoot_timer > shoot_delay:
+            #bullet spawning
+            movement(hold_keyL, hold_keyR, hold_keyU, hold_keyD)
 
-        ship_sprites(hold_keyR, hold_keyL, hold_keyU, hold_keyD)
+            current_time_bullet = pygame.time.get_ticks()
+            bullet_spawn_timer = bullet_spawn(bullet_spawn_timer, current_time_bullet, x_bullet, 500)
+            ship_sprites(hold_keyR, hold_keyL, hold_keyU, hold_keyD)
+        elif shoot and current_shoot_timer - shoot_timer < shoot_delay:
+            ship_sprites(hold_keyR, hold_keyL, hold_keyU, hold_keyD)
 
 
         #powerup spawning
