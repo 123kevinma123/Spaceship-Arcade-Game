@@ -6,6 +6,7 @@ orange = (255,140,0)
 pink = (255, 0, 255)
 green = (0, 255, 0)
 red = (255, 0, 0)
+dark_red = (125,15,32)
 
 class create_bullet:
     def __init__(self, x_bullet, y_bullet, speed):
@@ -19,4 +20,7 @@ class create_bullet:
         #print(self.y)
 
     def draw(self):
-        pygame.draw.rect(WIN, red, (self.x, self.y, 3, 20))
+        pygame.draw.rect(WIN, dark_red, (self.x, self.y, 4, 20))
+        #sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/bullet.png")
+        #sprite_image = pygame.transform.scale(sprite_image, (40, 20))
+        #WIN.blit(sprite_image, (self.x, self.y))

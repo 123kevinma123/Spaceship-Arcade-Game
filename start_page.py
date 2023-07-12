@@ -1,6 +1,8 @@
 import pygame
 import sys
 
+pygame.font.init()
+
 white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
@@ -10,6 +12,9 @@ sprite_width, sprite_height = 60, 60
 ship_x, ship_y = (width - sprite_width) / 2, -sprite_height
 ship_speed = 2
 start_pos = 100
+font_path = "/Users/123ke/Documents/GitHub/spaceship/font.ttf"
+font_size = 18
+custom_font = pygame.font.Font(font_path, font_size)
 #Set background
 background_image = pygame.image.load("background2.png")
 background_image = pygame.transform.scale(background_image, (width, height))
@@ -44,12 +49,12 @@ class start_page:
 
     def draw(self):
         # Draw title text
-        title_text = self.font.render("Spaceship Game", True, red)
+        title_text = custom_font.render("Spaceship Game", True, red)
         title_rect = title_text.get_rect(center = (self.width // 2, self.height // 2 - 50))
         WIN.blit(title_text, title_rect)
 
         # Draw instructions text
-        instructions_text = self.font.render("Press SPACE to start", True, red)
+        instructions_text = custom_font.render("Press SPACE to start", True, red)
         instructions_rect = instructions_text.get_rect(center = (self.width // 2, self.height // 2 + 50))
         WIN.blit(instructions_text, instructions_rect)
 
