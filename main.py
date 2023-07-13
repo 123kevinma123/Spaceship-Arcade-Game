@@ -50,7 +50,7 @@ bullets_arr = []
 powerup_arr = []
 enemy_bullets_arr = []
 enemy_arr = pygame.sprite.Group()
-bullet_spawn_interval, enemy_bullet_spawn_interval = 100, 100
+bullet_spawn_interval, enemy_bullet_spawn_interval = 80, 100
 
 #Set display surface perimeters 
 WIN = pygame.display.set_mode((width, height))
@@ -319,7 +319,7 @@ def main():
         #enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
         
         pygame.display.flip()
-        clock.tick(120)
+        clock.tick(240)
     pygame.quit()
 
 main()

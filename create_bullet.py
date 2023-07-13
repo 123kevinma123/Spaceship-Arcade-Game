@@ -20,7 +20,7 @@ class create_bullet:
         #print(self.y)
 
     def draw(self):
-        pygame.draw.rect(WIN, dark_red, (self.x, self.y, 4, 20))
+        pygame.draw.rect(WIN, red, (self.x, self.y, 4, 20))
         #sprite_image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/bullet.png")
         #sprite_image = pygame.transform.scale(sprite_image, (40, 20))
         #WIN.blit(sprite_image, (self.x, self.y))

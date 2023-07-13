@@ -15,6 +15,9 @@ ship_speed = 2
 start_pos = 100
 WIN = pygame.display.set_mode((width, height))
 
+# Redirect standard output to console
+sys.stdout = sys.__stdout__
+
 #Set background
 background_image = pygame.image.load("background2.png")
 background_image = pygame.transform.scale(background_image, (width, height))
@@ -32,6 +35,11 @@ custom_font = pygame.font.Font(font_path, font_size)
 #title_font.set_bold(True)
 #custom_font.set_bold(True)
 
+instructions_text = custom_font.render("BEGIN", True, red)
+instructions_rect = instructions_text.get_rect(center = (width // 2, height // 2 + 150))
+quit_text = custom_font.render("Quit", True, red)
+quit_rect = quit_text.get_rect(center = (width // 2, height // 2 + 180))
+
 class start_page:
     def __init__(self):
         self.width = width
@@ -42,17 +50,35 @@ class start_page:
 
         self.background_y1 = 0
         self.background_y2 = 0
+        self.track = 0
 
-    def handle_events(self):
+    def handle_events(self, is_hover):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    self.start_page = False
 
-    def draw(self):
+            mouse = pygame.mouse.get_pos()
+            if instructions_rect.collidepoint(mouse):
+                is_hover = True
+                self.track = 2
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.start_page = False
+            elif not instructions_rect.collidepoint(mouse) and not quit_rect.collidepoint(mouse):
+                is_hover = False
+                self.track = 0
+            elif quit_rect.collidepoint(mouse):
+                is_hover = True
+                self.track = 1
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.start_page = False
+            else:
+                is_hover = False
+                self.track = 0
+            
+        return is_hover
+
+    def draw(self, is_hover):
         #cross
         sprite_image = pygame.image.load(f"/Users/123ke/Documents/GitHub/spaceship/cross.png")
         sprite_image = pygame.transform.scale(sprite_image, (150, 150))
@@ -66,13 +92,20 @@ class start_page:
         title_rect2 = title_text2.get_rect(center = (self.width // 2, self.height // 2 - 130))
         WIN.blit(title_text2, title_rect2)
 
-        #instructions text
-        instructions_text = custom_font.render("BEGIN", True, red)
+        #start/quit text
+        if is_hover and self.track == 2:
+            instructions_text = custom_font.render("BEGIN", True, white)
+        else:
+            instructions_text = custom_font.render("BEGIN", True, red)
+        if is_hover and self.track == 1:
+            quit_text = custom_font.render("QUIT", True, white)
+        else:
+            quit_text = custom_font.render("QUIT", True, red)
+        
         instructions_rect = instructions_text.get_rect(center = (self.width // 2, self.height // 2 + 150))
-        WIN.blit(instructions_text, instructions_rect)
+        quit_rect = quit_text.get_rect(center = (self.width // 2, self.height // 2 + 180))
 
-        quit_text = custom_font.render("QUIT", True, red)
-        quit_rect = instructions_text.get_rect(center = (self.width // 2, self.height // 2 + 180))
+        WIN.blit(instructions_text, instructions_rect)
         WIN.blit(quit_text, quit_rect)
 
         pygame.display.flip()
@@ -101,9 +134,10 @@ class start_page:
         WIN.blit(sprite_image, (ship_x, ship_y))
     
     def run(self):
+        is_hover = False
         while self.start_page:
             self.background()
-            self.handle_events()
-            self.draw()
+            self.draw(is_hover)
+            is_hover = self.handle_events(is_hover)
             clock = pygame.time.Clock()
             clock.tick(120)
