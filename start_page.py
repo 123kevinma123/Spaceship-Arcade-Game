@@ -6,15 +6,15 @@ pygame.font.init()
 white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
+dark_red = (125,15,32)
 scroll_speed = 2
 width, height = 400, 600
 sprite_width, sprite_height = 60, 60
 ship_x, ship_y = (width - sprite_width) / 2, -sprite_height
 ship_speed = 2
 start_pos = 100
-font_path = "/Users/123ke/Documents/GitHub/spaceship/font.ttf"
-font_size = 18
-custom_font = pygame.font.Font(font_path, font_size)
+WIN = pygame.display.set_mode((width, height))
+
 #Set background
 background_image = pygame.image.load("background2.png")
 background_image = pygame.transform.scale(background_image, (width, height))
@@ -22,16 +22,21 @@ background_height = background_image.get_height()
 background_y1 = 0
 background_y2 = -background_height
 
-WIN = pygame.display.set_mode((width, height))
-
+#font
+font_path2 = "/Users/123ke/Documents/GitHub/spaceship/font4.ttf"
+font_path = "/Users/123ke/Documents/GitHub/spaceship/font4.ttf"
+title_size = 50
+font_size = 18
+title_font = pygame.font.Font(font_path2, title_size)
+custom_font = pygame.font.Font(font_path, font_size)
+#title_font.set_bold(True)
+#custom_font.set_bold(True)
 
 class start_page:
     def __init__(self):
         self.width = width
         self.height = height
-        pygame.display.set_caption("Spaceship Game")
-
-        self.font = pygame.font.Font(None, 36)
+        pygame.display.set_caption("Sequere lucem")
 
         self.start_page = True
 
@@ -48,15 +53,27 @@ class start_page:
                     self.start_page = False
 
     def draw(self):
-        # Draw title text
-        title_text = custom_font.render("Spaceship Game", True, red)
-        title_rect = title_text.get_rect(center = (self.width // 2, self.height // 2 - 50))
-        WIN.blit(title_text, title_rect)
+        #cross
+        sprite_image = pygame.image.load(f"/Users/123ke/Documents/GitHub/spaceship/cross.png")
+        sprite_image = pygame.transform.scale(sprite_image, (150, 150))
+        WIN.blit(sprite_image, (120, 250))
 
-        # Draw instructions text
-        instructions_text = custom_font.render("Press SPACE to start", True, red)
-        instructions_rect = instructions_text.get_rect(center = (self.width // 2, self.height // 2 + 50))
+        #title text
+        title_text = title_font.render("Sequere", True, red)
+        title_rect = title_text.get_rect(center = (self.width // 2, self.height // 2 - 180))
+        WIN.blit(title_text, title_rect)
+        title_text2 = title_font.render("Lucem", True, red)
+        title_rect2 = title_text2.get_rect(center = (self.width // 2, self.height // 2 - 130))
+        WIN.blit(title_text2, title_rect2)
+
+        #instructions text
+        instructions_text = custom_font.render("BEGIN", True, red)
+        instructions_rect = instructions_text.get_rect(center = (self.width // 2, self.height // 2 + 150))
         WIN.blit(instructions_text, instructions_rect)
+
+        quit_text = custom_font.render("QUIT", True, red)
+        quit_rect = instructions_text.get_rect(center = (self.width // 2, self.height // 2 + 180))
+        WIN.blit(quit_text, quit_rect)
 
         pygame.display.flip()
     

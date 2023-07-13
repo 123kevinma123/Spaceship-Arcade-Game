@@ -25,7 +25,7 @@ background_image = pygame.transform.scale(background_image, (width, height))
 background_height = background_image.get_height()
 background_y1 = 0
 background_y2 = -background_height
- 
+
 #Set RGB + other constants
 
 black = (0, 0, 0)
@@ -54,7 +54,7 @@ bullet_spawn_interval, enemy_bullet_spawn_interval = 100, 100
 
 #Set display surface perimeters 
 WIN = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Spaceship Game")
+pygame.display.set_caption("Sequere lucem")
 WIN.fill(black)
 clock = pygame.time.Clock()
 info_obj = pygame.display.Info()
