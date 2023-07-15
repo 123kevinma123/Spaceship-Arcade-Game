@@ -203,7 +203,7 @@ def powerup_spawn(powerup_spawn_timer, current_time_powerup):
 def enemy_spawn(enemy_spawn_timer, current_time_enemy):
     enemy_spawn_interval = 2000
     if current_time_enemy - enemy_spawn_timer >= enemy_spawn_interval:
-        new_enemy = enemy()
+        new_enemy = enemy(ship_x, ship_y)
         collision = False
         for enemy_bot in enemy_arr: #checks if sprite will collide with anything in the group
             if pygame.sprite.collide_rect(enemy_bot, new_enemy):
@@ -251,6 +251,8 @@ def main():
     start.run()
     background_y1 = start.background_y1
     background_y2 = start.background_y2
+
+    bat = enemy(ship_x, ship_y)
 
     #main game loop
     while run:
@@ -318,8 +320,12 @@ def main():
         current_time_enemy_bullet = pygame.time.get_ticks()
         #enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
         
+        #bat spawn test
+        bat.bat_bomber()
+        WIN.blit(bat.image, (bat.x, bat.y))
+
         pygame.display.flip()
-        clock.tick(240)
+        clock.tick(120)
     pygame.quit()
 
 main()

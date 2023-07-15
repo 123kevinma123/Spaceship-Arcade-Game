@@ -14,6 +14,7 @@ class create_enemy_bullet:
 
     def update(self):
         self.y += self.speed
+        self.x += 1
 
     def draw(self):
         pygame.draw.rect(WIN, red, (self.x, self.y, 2, 12))

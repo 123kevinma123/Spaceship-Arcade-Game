@@ -6,7 +6,7 @@ pygame.font.init()
 white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
-dark_red = (125,15,32)
+dark_red = (200,0,0)
 scroll_speed = 2
 width, height = 400, 600
 sprite_width, sprite_height = 60, 60
@@ -29,16 +29,16 @@ background_y2 = -background_height
 font_path2 = "/Users/123ke/Documents/GitHub/spaceship/font4.ttf"
 font_path = "/Users/123ke/Documents/GitHub/spaceship/font4.ttf"
 title_size = 50
-font_size = 18
+font_size = 20
 title_font = pygame.font.Font(font_path2, title_size)
 custom_font = pygame.font.Font(font_path, font_size)
 #title_font.set_bold(True)
 #custom_font.set_bold(True)
 
-instructions_text = custom_font.render("BEGIN", True, red)
-instructions_rect = instructions_text.get_rect(center = (width // 2, height // 2 + 150))
-quit_text = custom_font.render("Quit", True, red)
-quit_rect = quit_text.get_rect(center = (width // 2, height // 2 + 180))
+instructions_text = custom_font.render("BEGIN", True, white)
+instructions_rect = instructions_text.get_rect(center = (width // 2, height // 2 + 50))
+quit_text = custom_font.render("Quit", True, white)
+quit_rect = quit_text.get_rect(center = (width // 2, height // 2 + 90))
 
 class start_page:
     def __init__(self):
@@ -71,7 +71,8 @@ class start_page:
                 is_hover = True
                 self.track = 1
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.start_page = False
+                    pygame.quit()
+                    sys.exit()
             else:
                 is_hover = False
                 self.track = 0
@@ -82,15 +83,15 @@ class start_page:
         #cross
         sprite_image = pygame.image.load(f"/Users/123ke/Documents/GitHub/spaceship/cross.png")
         sprite_image = pygame.transform.scale(sprite_image, (150, 150))
-        WIN.blit(sprite_image, (120, 250))
+        WIN.blit(sprite_image, (120, 150))
 
         #title text
-        title_text = title_font.render("Sequere", True, red)
+        title_text = title_font.render("Sequere", True, white)
         title_rect = title_text.get_rect(center = (self.width // 2, self.height // 2 - 180))
-        WIN.blit(title_text, title_rect)
-        title_text2 = title_font.render("Lucem", True, red)
+        #WIN.blit(title_text, title_rect)
+        title_text2 = title_font.render("Lucem", True, white)
         title_rect2 = title_text2.get_rect(center = (self.width // 2, self.height // 2 - 130))
-        WIN.blit(title_text2, title_rect2)
+        #WIN.blit(title_text2, title_rect2)
 
         #start/quit text
         if is_hover and self.track == 2:
@@ -102,8 +103,8 @@ class start_page:
         else:
             quit_text = custom_font.render("QUIT", True, red)
         
-        instructions_rect = instructions_text.get_rect(center = (self.width // 2, self.height // 2 + 150))
-        quit_rect = quit_text.get_rect(center = (self.width // 2, self.height // 2 + 180))
+        instructions_rect = instructions_text.get_rect(center = (self.width // 2, self.height // 2 + 50))
+        quit_rect = quit_text.get_rect(center = (self.width // 2, self.height // 2 + 90))
 
         WIN.blit(instructions_text, instructions_rect)
         WIN.blit(quit_text, quit_rect)
@@ -123,6 +124,7 @@ class start_page:
         WIN.blit(background_image, (0, background_y2))
         self.background_y1 = background_y1
         self.background_y2 = background_y2
+        WIN.fill(black)
 
     #ship sprites
     def ship_sprites(self, ship_y):
