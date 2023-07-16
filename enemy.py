@@ -21,6 +21,8 @@ class enemy(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
         self.slope = (self.y - y_player) // (self.x - x_player)
+        self.temp = False
+        self.temp2 = False
 
     #define suicide bomber
     #pauses a bit and launches themselves at player coordinates in diagonal
@@ -29,8 +31,9 @@ class enemy(pygame.sprite.Sprite):
             self.x += 0.5
             self.y += self.slope // 2
 
-    #define soldier
+    #define soldier --> maybe make into stationary turret?
     #launches volleys of bullets at a time, recalibrate slope after each set of bullets?
+    #spawn 5 bullets, each with a slightly lower y value, timer for bullet spawn interval --> readjust player coordinates for next bullet
     def soldier(self):
         if self.x <= 400 and self.x >= 0 and self.y >= 0 and self.y <= 600:
             self.x += 0.5
@@ -38,13 +41,14 @@ class enemy(pygame.sprite.Sprite):
 
     #define explody ball thing
     #spawns from both sides of screen and lanuches bullets in a circular pattern
-    def ball(self):
+    def ball_right(self):
         self.y = 150
-        if self.x <= 340:
+        if self.x <= 400:
             self.x += 0.2
-    def ball2(self):
+
+    def ball_left(self):
         self.y = 150
-        if self.x >= 0:
+        if self.x >= -100:
             self.x -= 0.2
         
         

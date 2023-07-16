@@ -43,7 +43,7 @@ start_var = 100
 ship_x, ship_y = (width - sprite_width) / 2, height + sprite_height
 x_bullet, y_bullet = (width - bullet_width) / 2, height - sprite_height - start_var - 10
 bullet_speed, enemy_bullet_speed = 10, 8
-speed_down, speed_up, speed_LR = 3, 3, 4
+speed_down, speed_up, speed_LR = 3, 3, 2
 vertical_max = 0
 scroll_speed = 2
 bullets_arr = []
@@ -251,7 +251,7 @@ def enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet):
     for shot in enemy_bullets_arr:
         shot.circle()
         shot.draw()
-        if shot.y > 1200 or shot.y < -600 or shot.x > 800 or shot.x < -400:
+        if shot.y > 2000 or shot.y < -1000 or shot.x > 1000 or shot.x < -1000:
             bullets_to_remove.append(shot)  #add bullets to be removed to the separate list
 
     #remove bullets that need to be removed
@@ -284,10 +284,10 @@ def main():
 
     if spawn_x < 400:
         spawn_x += 200
-    circle = enemy(ship_x, ship_y, 70, 150)
-    circle2 = enemy(ship_x, ship_y, 270, 150)
-    enemy_arr.add(circle)
-    enemy_arr.add(circle2)
+    circleL = enemy(ship_x, ship_y, 70, 150)
+    circleR = enemy(ship_x, ship_y, 270, 150)
+    enemy_arr.add(circleL)
+    enemy_arr.add(circleR)
 
     #main game loop
     while run:
@@ -355,11 +355,11 @@ def main():
         enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
         
         #bat spawn test
-        circle.ball()
-        circle2.ball2()
-        WIN.blit(circle.image, (circle.x + 5, circle.y + 5))
-        WIN.blit(circle2.image, (circle2.x + 5, circle2.y + 5))
-
+        circleL.ball_right()
+        circleR.ball_left()
+        WIN.blit(circleL.image, (circleL.x + 5, circleL.y + 5))
+        WIN.blit(circleR.image, (circleR.x + 5, circleR.y + 5))
+        #need to trash bullets and stuff after they move off screen 
         pygame.display.flip()
         clock.tick(120)
     pygame.quit()
