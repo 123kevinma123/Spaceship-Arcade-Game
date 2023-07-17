@@ -9,7 +9,7 @@ sprite_angle = 180
 
 #put image into argument + type of enemy
 class enemy(pygame.sprite.Sprite):
-    def __init__(self, x_player, y_player, spawn_x, spawn_y):
+    def __init__(self, x_player, y_player, spawn_x, spawn_y, pos):
         super().__init__()
         #self.x = random.randint(50, 350)
         self.x = spawn_x
@@ -23,6 +23,7 @@ class enemy(pygame.sprite.Sprite):
         self.slope = (self.y - y_player) // (self.x - x_player)
         self.temp = False
         self.temp2 = False
+        self.pos = pos
 
     #define suicide bomber
     #pauses a bit and launches themselves at player coordinates in diagonal

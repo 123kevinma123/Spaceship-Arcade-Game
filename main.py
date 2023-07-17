@@ -5,7 +5,6 @@ import sys
 
 from create_bullet import create_bullet
 from create_enemy_bullet import create_enemy_bullet
-from power_up import power_up
 from enemy import enemy
 from start_page import start_page
 
@@ -52,6 +51,8 @@ enemy_bullets_arr = []
 enemy_arr = pygame.sprite.Group()
 bullet_spawn_interval, enemy_bullet_spawn_interval = 80, 100
 spawn_x = 100
+circle_arr = []
+circle_bullets_arr = []
 
 #Set display surface perimeters 
 WIN = pygame.display.set_mode((width, height))
@@ -182,24 +183,6 @@ def enemy_bullet_spawn2(enemy_bullet_spawn_timer, current_time_enemy_bullet):
 
     return enemy_bullet_spawn_timer
 
-
-#powerup spawning
-def powerup_spawn(powerup_spawn_timer, current_time_powerup):
-    global powerup_arr
-    powerup_spawn_interval = 1500
-    if current_time_powerup - powerup_spawn_timer >= powerup_spawn_interval:
-        upgrade = power_up(bullet_speed)
-        powerup_arr.append(upgrade)
-        powerup_spawn_timer = current_time_powerup
-
-    for upgrade in powerup_arr:
-        upgrade.update()
-        upgrade.draw()
-        if upgrade.y > 600:
-            powerup_arr.remove(upgrade)
-
-    return powerup_spawn_timer
-
 #enemy spawning 
 def enemy_spawn(enemy_spawn_timer, current_time_enemy):
     global spawn_x
@@ -236,19 +219,20 @@ def background():
     WIN.blit(background_image, (0,background_y1))
     WIN.blit(background_image, (0, background_y2))
 
-#enemy bullet spawning test
-def enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet):
-    global x_bullet, enemy_bullets_arr, enemy_bullet_spawn_interval
+#circle bullet spawning test
+def circle_bullet_spawn(circle_bullet_spawn_timer, current_time_circle_bullet):
+    global x_bullet, circle_bullets_arr
+    circle_bullet_spawn_interval = 1000
     bullets_to_remove = []  # Store bullets to be removed
     circle_bullet = 24
-    if current_time_enemy_bullet - enemy_bullet_spawn_timer >= 1000:
-        for enemy_bot in enemy_arr:
+    if current_time_circle_bullet - circle_bullet_spawn_timer >= circle_bullet_spawn_interval:
+        for enemy_bot in circle_arr:
             for _ in range(circle_bullet):
                 shot = create_enemy_bullet(enemy_bot.x + 30, enemy_bot.y + 30, 1, circle_bullet)
-                enemy_bullets_arr.append(shot)
-        enemy_bullet_spawn_timer = current_time_enemy_bullet
+                circle_bullets_arr.append(shot)
+        circle_bullet_spawn_timer = current_time_circle_bullet
 
-    for shot in enemy_bullets_arr:
+    for shot in circle_bullets_arr:
         shot.circle()
         shot.draw()
         if shot.y > 2000 or shot.y < -1000 or shot.x > 1000 or shot.x < -1000:
@@ -256,8 +240,28 @@ def enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet):
 
     #remove bullets that need to be removed
     for shot in bullets_to_remove:
-       enemy_bullets_arr.remove(shot)
-    return enemy_bullet_spawn_timer
+       circle_bullets_arr.remove(shot)
+    return circle_bullet_spawn_timer
+
+#enemy circle spawner
+def enemy_circle_spawn(circle_spawn_timer, current_time_circle):
+    global spawn_x
+    circle_spawn_interval = 5000
+    if current_time_circle - circle_spawn_timer >= circle_spawn_interval:
+        circleL = enemy(ship_x, ship_y, 60, 150, 1)
+        circleR = enemy(ship_x, ship_y, 270, 150, 2)
+        circle_arr.append(circleL)
+        circle_arr.append(circleR)
+        circle_spawn_timer = current_time_circle
+
+    for enemy_bot in circle_arr:
+        if enemy_bot.pos == 1:
+            enemy_bot.ball_right()
+        else:
+            enemy_bot.ball_left()
+        WIN.blit(enemy_bot.image, (enemy_bot.x + 5, enemy_bot.y + 5))
+
+    return circle_spawn_timer
 
 #create new function for circle enemy spawning
 #Main function
@@ -268,8 +272,9 @@ def main():
     transition_speed = 2.5
     hold_keyR, hold_keyL, hold_keyU, hold_keyD = False, False, False, False
     bullet_spawn_timer = pygame.time.get_ticks()
-    powerup_spawn_timer = pygame.time.get_ticks()
+    circle_spawn_timer = pygame.time.get_ticks()
     enemy_spawn_timer = pygame.time.get_ticks()
+    circle_bullet_spawn_timer = pygame.time.get_ticks()
     enemy_bullet_spawn_timer = pygame.time.get_ticks()
     shoot_timer = 0
     shoot_delay = 400
@@ -284,10 +289,10 @@ def main():
 
     if spawn_x < 400:
         spawn_x += 200
-    circleL = enemy(ship_x, ship_y, 70, 150)
-    circleR = enemy(ship_x, ship_y, 270, 150)
-    enemy_arr.add(circleL)
-    enemy_arr.add(circleR)
+    #circleL = enemy(ship_x, ship_y, 60, 150)
+    #circleR = enemy(ship_x, ship_y, 270, 150)
+    #enemy_arr.add(circleL)
+    #enemy_arr.add(circleR)
 
     #main game loop
     while run:
@@ -350,15 +355,19 @@ def main():
         current_time_enemy = pygame.time.get_ticks()
         #enemy_spawn_timer = enemy_spawn(enemy_spawn_timer, current_time_enemy)
 
-        #enemy bullet spawning
-        current_time_enemy_bullet = pygame.time.get_ticks()
-        enemy_bullet_spawn_timer = enemy_bullet_spawn(enemy_bullet_spawn_timer, current_time_enemy_bullet)
+        #circle bullet spawning
+        current_time_circle_bullet = pygame.time.get_ticks()
+        circle_bullet_spawn_timer = circle_bullet_spawn(circle_bullet_spawn_timer, current_time_circle_bullet)
+        
+        #circle enemy spawning
+        current_time_circle = pygame.time.get_ticks()
+        circle_spawn_timer = enemy_circle_spawn(circle_spawn_timer, current_time_circle)
         
         #bat spawn test
-        circleL.ball_right()
-        circleR.ball_left()
-        WIN.blit(circleL.image, (circleL.x + 5, circleL.y + 5))
-        WIN.blit(circleR.image, (circleR.x + 5, circleR.y + 5))
+        #circleL.ball_right()
+        #circleR.ball_left()
+        #WIN.blit(circleL.image, (circleL.x + 5, circleL.y + 5))
+        #WIN.blit(circleR.image, (circleR.x + 5, circleR.y + 5))
         #need to trash bullets and stuff after they move off screen 
         pygame.display.flip()
         clock.tick(120)
