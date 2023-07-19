@@ -269,8 +269,9 @@ def circle_spawn(circle_spawn_timer, current_time_circle):
 def bat_spawn(bat_spawn_timer, current_time_bat):
     bat_spawn_interval = 1000
     if current_time_bat - bat_spawn_timer >= bat_spawn_interval:
-        bat = enemy(ship_x, ship_y, 0, 100, 1)
-        bat2 = enemy(ship_x, ship_y, 340, 100, 2)
+        bat = enemy(ship_x, ship_y, 0, 0, 1)
+        bat2 = enemy(ship_x, ship_y, 340, 0, 2)
+        #if len(bat_arr) != 10:
         bat_arr.append(bat)
         bat_arr.append(bat2)
         bat_spawn_timer = current_time_bat

@@ -19,6 +19,8 @@ class enemy(pygame.sprite.Sprite):
         #self.x = random.randint(50, 350)
         self.x = spawn_x
         self.y = spawn_y
+        self.playerx = x_player
+        self.playery = y_player
         self.image = pygame.image.load("/Users/123ke/Documents/GitHub/spaceship/c0.png")
         self.image = pygame.transform.scale(self.image, (sprite_width, sprite_height))
         self.image = pygame.transform.rotate(self.image, sprite_angle)
@@ -28,8 +30,9 @@ class enemy(pygame.sprite.Sprite):
         self.slope = 0
         if self.x - x_player != 0:
             self.slope = (y_player - self.y) / (x_player - self.x)
-        self.distance = math.sqrt((y_player - self.y)**2 + (x_player - self.x)**2)
-        self.scale_factor = 300 / self.distance
+        #self.distance = math.sqrt((y_player - self.y)**2 + (x_player - self.x)**2)
+        self.speed = 3
+        #self.scale_factor = self.speed / self.distance
         self.temp = False
         self.temp2 = False
         self.pos = pos
@@ -37,18 +40,18 @@ class enemy(pygame.sprite.Sprite):
     #define suicide bomber
     #pauses a bit and launches themselves at player coordinates in diagonal
     def bat_bomber(self):
-        if self.x <= 400 and self.x >= -60 and self.y >= -60 and self.y <= 600:
-            print(self.distance)
+        if -60 <= self.x <= 400 and -60 <= self.y <= 600:
+            dx = self.playerx - self.x
+            dy = self.playery - self.y
+            distance = math.sqrt(dx ** 2 + dy ** 2)      
+        if distance > 10:
+            dx /= distance
+            dy /= distance
+            self.x += dx * self.speed
+            self.y += dy * self.speed
+            self.rect.x = self.x
+            self.rect.y = self.y
 
-            #need to scale to certain speed
-            if self.pos == 1:
-                self.x += 1 * self.scale_factor
-                self.y += self.slope * self.scale_factor
-            else:
-                self.x -= 1 * self.scale_factor
-                self.y -= self.slope * self.scale_factor
-        self.rect.x = self.x
-        self.rect.y = self.y
 
     #define soldier --> maybe make into stationary turret?
     #launches volleys of bullets at a time, recalibrate slope after each set of bullets?
