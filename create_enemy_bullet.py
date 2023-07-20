@@ -13,7 +13,7 @@ bullet_speed = 3
 bullet_angle = 0  # Starting angle
 
 class create_enemy_bullet:
-    def __init__(self, x_bullet, y_bullet, speed, circle_bullet):
+    def __init__(self, x_bullet, y_bullet, speed, circle_bullet, x_ship, y_ship):
         self.x = x_bullet
         self.y = y_bullet
         self.speed = speed
@@ -22,6 +22,8 @@ class create_enemy_bullet:
         self.cy = 0
         self.pattern_center = (x_bullet, y_bullet)
         self.num_bullets = circle_bullet
+        self.x_ship = x_ship
+        self.y_ship = y_ship
 
 
     def update(self):
@@ -40,3 +42,16 @@ class create_enemy_bullet:
         
         # Update the bullet angle for the next bullet
         bullet_angle += 360 // self.num_bullets
+
+    def soldier(self):
+        dx = self.x_ship - self.x
+        dy = self.y_ship - self.y
+        distance = math.sqrt(dx ** 2 + dy ** 2)      
+        if distance > 10:
+            dx /= distance
+            dy /= distance
+            self.x += dx * self.speed
+            self.y += dy * self.speed
+            #self.rect.x = self.x
+            #self.rect.y = self.y
+

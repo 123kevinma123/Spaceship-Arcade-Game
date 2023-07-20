@@ -51,9 +51,11 @@ enemy_arr = pygame.sprite.Group()
 bullet_spawn_interval, enemy_bullet_spawn_interval = 80, 100
 spawn_x = 100
 
+bat_arr = []
 circle_arr = []
 circle_bullets_arr = []
-bat_arr = []
+soldier_arr = []
+soldier_bullets_arr = []
 
 #Set display surface perimeters 
 WIN = pygame.display.set_mode((width, height))
@@ -281,6 +283,30 @@ def bat_spawn(bat_spawn_timer, current_time_bat):
         WIN.blit(enemy_bot.image, (enemy_bot.x, enemy_bot.y))
 
     return bat_spawn_timer
+
+#soldier bullet spawning test
+def soldier_bullet_spawn(soldier_bullet_spawn_timer, current_time_soldier_bullet):
+    global x_bullet, soldier_bullets_arr
+    soldier_bullet_spawn_interval = 1000
+    bullets_to_remove = []  # Store bullets to be removed
+    circle_bullet = 24
+    if current_time_soldier_bullet - soldier_bullet_spawn_timer >= soldier_bullet_spawn_interval:
+        for enemy_bot in soldier_arr:
+            for _ in range(circle_bullet):
+                shot = create_enemy_bullet(enemy_bot.x, enemy_bot.y, 1, circle_bullet, ship_x, ship_y)
+                soldier_bullets_arr.append(shot)
+        soldier_bullet_spawn_timer = current_time_soldier_bullet
+
+    for shot in soldier_bullets_arr:
+        shot.soldier()
+        shot.draw()
+        if shot.y > 2000 or shot.y < -1000 or shot.x > 1000 or shot.x < -1000:
+            bullets_to_remove.append(shot)  #add bullets to be removed to the separate list
+
+    #remove bullets that need to be removed
+    for shot in bullets_to_remove:
+       soldier_bullets_arr.remove(shot)
+    return soldier_bullet_spawn_timer
 #Main function
 def main():
     global x_bullet, y_bullet, scroll_speed, background_y1, background_y2, ship_y, spawn_x
@@ -292,6 +318,9 @@ def main():
     enemy_spawn_timer = pygame.time.get_ticks()
     enemy_bullet_spawn_timer = pygame.time.get_ticks()
     
+    soldier_spawn_timer = pygame.time.get_ticks()
+    soldier_bullet_spawn_timer = pygame.time.get_ticks()
+
     circle_spawn_timer = pygame.time.get_ticks()
     circle_bullet_spawn_timer = pygame.time.get_ticks()
     
@@ -311,6 +340,9 @@ def main():
 
     if spawn_x < 400:
         spawn_x += 200
+
+    soldier = enemy(ship_x, ship_y, 200, 100, 1)
+    soldier_arr.append(soldier)
 
     #main game loop
     while run:
@@ -379,7 +411,12 @@ def main():
         
         #bat spawning
         current_time_bat = pygame.time.get_ticks()
-        bat_spawn_timer = bat_spawn(bat_spawn_timer, current_time_bat)
+        #bat_spawn_timer = bat_spawn(bat_spawn_timer, current_time_bat)
+        
+        #soldier bullet spawning
+        current_time_soldier_bullet = pygame.time.get_ticks()
+        soldier_bullet_spawn_timer = soldier_bullet_spawn(soldier_bullet_spawn_timer, current_time_soldier_bullet)
+        
         
         #need to trash bullets and stuff after they move off screen 
         pygame.display.flip()
