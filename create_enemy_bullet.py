@@ -50,8 +50,12 @@ class create_enemy_bullet:
         if distance > 10:
             dx /= distance
             dy /= distance
-            self.x += dx * self.speed
-            self.y += dy * self.speed
-            #self.rect.x = self.x
-            #self.rect.y = self.y
+
+            next_x = self.x + dx * self.speed * 5
+            next_y = self.y + dy * self.speed * 5
+
+            # Update the current position with the interpolated position
+            self.x = next_x
+            self.y = next_y
+
 

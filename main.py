@@ -231,7 +231,7 @@ def circle_bullet_spawn(circle_bullet_spawn_timer, current_time_circle_bullet):
     if current_time_circle_bullet - circle_bullet_spawn_timer >= circle_bullet_spawn_interval:
         for enemy_bot in circle_arr:
             for _ in range(circle_bullet):
-                shot = create_enemy_bullet(enemy_bot.x + 30, enemy_bot.y + 30, 1, circle_bullet)
+                shot = create_enemy_bullet(enemy_bot.x + 30, enemy_bot.y + 30, 1, circle_bullet, ship_x, ship_y)
                 circle_bullets_arr.append(shot)
         circle_bullet_spawn_timer = current_time_circle_bullet
 
@@ -349,6 +349,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                sys.exit()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
@@ -403,11 +404,11 @@ def main():
 
         #circle bullet spawning
         current_time_circle_bullet = pygame.time.get_ticks()
-        #circle_bullet_spawn_timer = circle_bullet_spawn(circle_bullet_spawn_timer, current_time_circle_bullet)
+        circle_bullet_spawn_timer = circle_bullet_spawn(circle_bullet_spawn_timer, current_time_circle_bullet)
         
         #circle enemy spawning
         current_time_circle = pygame.time.get_ticks()
-        #circle_spawn_timer = circle_spawn(circle_spawn_timer, current_time_circle)
+        circle_spawn_timer = circle_spawn(circle_spawn_timer, current_time_circle)
         
         #bat spawning
         current_time_bat = pygame.time.get_ticks()
@@ -415,7 +416,7 @@ def main():
         
         #soldier bullet spawning
         current_time_soldier_bullet = pygame.time.get_ticks()
-        soldier_bullet_spawn_timer = soldier_bullet_spawn(soldier_bullet_spawn_timer, current_time_soldier_bullet)
+        #soldier_bullet_spawn_timer = soldier_bullet_spawn(soldier_bullet_spawn_timer, current_time_soldier_bullet)
         
         
         #need to trash bullets and stuff after they move off screen 
