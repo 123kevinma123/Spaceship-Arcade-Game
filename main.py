@@ -404,11 +404,11 @@ def main():
 
         #circle bullet spawning
         current_time_circle_bullet = pygame.time.get_ticks()
-        circle_bullet_spawn_timer = circle_bullet_spawn(circle_bullet_spawn_timer, current_time_circle_bullet)
+        #circle_bullet_spawn_timer = circle_bullet_spawn(circle_bullet_spawn_timer, current_time_circle_bullet)
         
         #circle enemy spawning
         current_time_circle = pygame.time.get_ticks()
-        circle_spawn_timer = circle_spawn(circle_spawn_timer, current_time_circle)
+        #circle_spawn_timer = circle_spawn(circle_spawn_timer, current_time_circle)
         
         #bat spawning
         current_time_bat = pygame.time.get_ticks()
